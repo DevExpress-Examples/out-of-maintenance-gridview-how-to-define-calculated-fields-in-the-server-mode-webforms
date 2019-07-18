@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="CalculatedFieldsTestModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Products">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ProductPrice" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="UnitsInStock" Type="int" Nullable="false" />
+          <Property Name="ProductionDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <Function Name="CustomProducts" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="daysExpiresOffset" Type="int" Mode="In" />
+          <Parameter Name="currentDate" Type="datetime" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="Id" Type="int" Nullable="false" />
+                <Property Name="ProductName" Type="nvarchar(max)" Nullable="false" />
+                <Property Name="ProductionDate" Type="datetime" Nullable="false" />
+                <Property Name="ProductPrice" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+                <Property Name="UnitsInStock" Type="int" Nullable="false" />
+                <Property Name="ProductExpiresDate" Type="datetime" />
+                <Property Name="DaysUntilExpires" Type="int" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <EntityContainer Name="CalculatedFieldsTestModelStoreContainer">
+          <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CalculatedFieldsTestModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <ComplexType Name="CustomProducts_Result">
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="ProductName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ProductionDate" Type="DateTime" Nullable="false" />
+          <Property Name="ProductPrice" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="UnitsInStock" Type="Int32" Nullable="false" />
+          <Property Name="ProductExpiresDate" Type="DateTime" />
+          <Property Name="DaysUntilExpires" Type="Int32" />
+        </ComplexType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ProductPrice" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="UnitsInStock" Type="Int32" Nullable="false" />
+          <Property Name="ProductionDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityContainer Name="CalculatedFieldsTestEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Products" EntityType="Self.Product" />
+          <FunctionImport Name="CustomProducts" IsComposable="true" ReturnType="Collection(CalculatedFieldsTestModel.CustomProducts_Result)">
+            <Parameter Name="daysExpiresOffset" Mode="In" Type="Int32" />
+            <Parameter Name="currentDate" Mode="In" Type="DateTime" />
+          </FunctionImport>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CalculatedFieldsTestModelStoreContainer" CdmEntityContainer="CalculatedFieldsTestEntities">
+          <EntitySetMapping Name="Products">
+            <EntityTypeMapping TypeName="CalculatedFieldsTestModel.Product">
+              <MappingFragment StoreEntitySet="Products">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="ProductPrice" ColumnName="ProductPrice" />
+                <ScalarProperty Name="UnitsInStock" ColumnName="UnitsInStock" />
+                <ScalarProperty Name="ProductionDate" ColumnName="ProductionDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionName="CalculatedFieldsTestModel.Store.CustomProducts" FunctionImportName="CustomProducts">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CalculatedFieldsTestModel.CustomProducts_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="ProductionDate" ColumnName="ProductionDate" />
+                <ScalarProperty Name="ProductPrice" ColumnName="ProductPrice" />
+                <ScalarProperty Name="UnitsInStock" ColumnName="UnitsInStock" />
+                <ScalarProperty Name="ProductExpiresDate" ColumnName="ProductExpiresDate" />
+                <ScalarProperty Name="DaysUntilExpires" ColumnName="DaysUntilExpires" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
