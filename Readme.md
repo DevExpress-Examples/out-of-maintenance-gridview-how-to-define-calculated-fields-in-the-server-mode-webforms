@@ -1,4 +1,7 @@
 # GridView - How to define calculated fields in the Server Mode
+<!-- run online -->
+**[[Run Online]](https://codecentral.devexpress.com/135603547/)**
+<!-- run online end -->
 
 
 <p>In this example, we demonstrate how you can implement calculated fields when the GridView extension is bound to a Server Mode data source.</p>
